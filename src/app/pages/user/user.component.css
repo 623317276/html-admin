@@ -1,0 +1,17 @@
+.demo-loadmore-list {
+    min-height: 350px;
+  }
+  .loadmore {
+    text-align: center;
+    margin-top: 12px;
+    height: 32px;
+    line-height: 32px;
+  }
+  .add-button{
+    position: absolute;
+    right: 50px;
+  }
+  .downButton{
+    position: absolute;
+    right: 0px;
+}

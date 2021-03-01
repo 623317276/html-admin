@@ -1,0 +1,159 @@
+<nz-spin [nzSpinning]="isSpinning">
+
+
+    <form class="pb10" nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="submitSearchForm()">
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your username!">
+            <nz-input-group nzPrefixIcon="user">
+              <input formControlName="goodsName" [(ngModel)]="searchName" nz-input placeholder="输入商品名称" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary"><i nz-icon nzType="search"></i>搜索</button>
+          </nz-form-control>
+        </nz-form-item>
+        <button class="downButton" nz-button (click)="open('add', 0);" nzType="primary"><i nz-icon nzType="user-add" nzTheme="outline"></i>添加商品</button>
+      </form>
+
+
+    <!-- 表格 start -->
+    <nz-table
+          [nzShowSizeChanger]="false"
+          [nzData]="listOfRandomUser"
+          [nzFrontPagination]="false"
+          [nzLoading]="loading"
+          [nzTotal]="total"
+          [nzPageSize]="pageSize"
+          (nzPageSizeChange)="nzPageSizeChange($event)"
+          [nzPageIndex]="pageIndex"
+          (nzPageIndexChange)="nzPageIndexChange($event)"
+          nzBordered="true"
+          nzOuterBordered="true"
+          nzSize="default"
+        >
+          <thead>
+            <tr>
+              <th nzAlign="center">ID</th>
+              <!-- <th nzAlign="center">商品编号</th> -->
+              <th nzAlign="center">商品名称</th>
+              <th nzAlign="center">商品价格</th>
+              <th nzAlign="center">商品库存</th>
+              <th nzAlign="center">商品状态</th>
+              <th nzAlign="center">商品备注</th>
+              <th nzAlign="center">创建时间</th>
+              <th nzAlign="center">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of listOfRandomUser" >
+              <td nzAlign="center">{{ data.id }}</td>
+              <!-- <td nzAlign="center">{{ data.number }}</td> -->
+              <td nzAlign="center">{{ data.name }}</td>
+              <td nzAlign="center">{{ data.price }}</td>
+              <td nzAlign="center">{{ data.stock }}</td>
+              <td nzAlign="center" *ngIf="data.status == '1'"><button nz-button nzType="primary" nzSize="small" >上架中</button></td>
+              <td nzAlign="center" *ngIf="data.status != '1'"><button nzDanger nz-button nzType="primary" nzSize="small">已下架</button></td>
+              <td nzAlign="center">{{ data.remark }}</td>
+              <td nzAlign="center">{{data.created}}</td>
+              <td nzAlign="center">
+                  <button class="mr5" nz-button nzType="primary" nzSize="small" (click)="open('edit', data.id)"><i nz-icon nzType="edit" nzTheme="outline"></i>编辑</button>
+            </td>
+            </tr>
+          </tbody>
+    </nz-table>
+    <!-- 表格 end -->
+    
+        <!-- 添加/编辑用户 start -->
+        <nz-drawer
+            [nzBodyStyle]="{ overflow: 'auto' }"
+            [nzMaskClosable]="false"
+            [nzWidth]="360"
+            [nzVisible]="visible"
+            [nzTitle]="addEditUserTitle"
+            [nzFooter]="footerTpl"
+            (nzOnClose)="close()"
+        >
+            <form nz-form *nzDrawerContent [formGroup]="GoodsModelForm">
+            <!-- <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>商品编号</nz-form-label>
+                    <nz-form-control nzHasFeedback nzErrorTip="MinLength is 4">
+                        <input nz-input formControlName="number"  placeholder="please enter goods number" maxlength="12" minlength="4"/>
+                    </nz-form-control>
+                </nz-form-item>
+                </div>
+            </div> -->
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                    <nz-form-item>
+                        <nz-form-label>商品名称</nz-form-label>
+                        <nz-form-control >
+                            <input nz-input formControlName="name"  placeholder="please enter goods name"/>
+                        </nz-form-control>
+                        
+                    </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>商品价格</nz-form-label>
+                    <nz-form-control>
+                        <nz-input-number formControlName="price" [nzMin]="0" [nzMax]="999999" [nzStep]="0.01" placeholder="输入商品价格"></nz-input-number>
+                    </nz-form-control>
+                </nz-form-item>
+                </div>                
+            </div>
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>商品库存</nz-form-label>
+                    <nz-form-control>
+                        <nz-input-number formControlName="stock" [nzMin]="0" [nzMax]="999999" [nzStep]="1" placeholder="输入库存数量"></nz-input-number>
+                    </nz-form-control>
+                </nz-form-item>
+                </div>                
+            </div>
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                    <nz-form-item>
+                        <nz-form-label>商品状态</nz-form-label>
+                        <nz-form-control>
+                        <!-- <input nz-input formControlName="user_status"  placeholder="please enter user status"  /> -->
+                            <nz-radio-group [(ngModel)]="GoodsModelForm.value.status" formControlName="status" nzName="status">
+                                <label nz-radio nzValue="1">上架</label>
+                                <label nz-radio nzValue="2">下架</label>
+                            </nz-radio-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                    <nz-form-item>
+                        <nz-form-label>商品备注</nz-form-label>
+                        <nz-form-control>
+                        <textarea nz-input placeholder="please enter url description" formControlName="remark" [nzAutosize]="{ minRows: 4, maxRows: 4 }"></textarea>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            </form>
+    
+            <ng-template #footerTpl>
+            <div style="float: right">
+                <button nz-button style="margin-right: 8px;" (click)="close()">取消</button>
+                <button nz-button nzType="primary" (click)="goodsModelSubmit()" [disabled]="!GoodsModelForm.valid">提交</button>
+            </div>
+            </ng-template>
+        </nz-drawer>
+        <!-- 添加/编辑用户 start -->
+
+</nz-spin>
+
+
+
+

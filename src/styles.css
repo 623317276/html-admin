@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+.pb10{
+    padding-bottom: 10px;
+}
+.ml15{
+    margin-left: 15px;
+  }
+.pt20{
+padding-top: 20px;
+}
+.pt50{
+padding-top: 50px;
+}
+.mr5{
+  margin-right: 5px;
+}
+
+.width40{
+  width: 40%;
+}
+
+.width100{
+  width: 100%;
+}

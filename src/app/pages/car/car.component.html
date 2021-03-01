@@ -1,0 +1,169 @@
+<nz-spin [nzSpinning]="isSpinning">
+
+
+    <form class="pb10" nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="submitSearchForm()">
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your username!" [nzSpan]="10"  class="mr5">
+            <nz-input-group nzPrefixIcon="user">
+              <input formControlName="searchName" nz-input placeholder="输入会员姓名" />
+            </nz-input-group>
+          </nz-form-control>
+          <nz-form-control nzErrorTip="Please input your username!" [nzSpan]="4">
+            <!-- <nz-input-group nzPrefixIcon="user"> -->
+              <!-- <input formControlName="carNumber1" nz-input placeholder="输入会员姓名" /> -->
+              <nz-select nzAllowClear nzShowSearch  formControlName="carNumber1" [nzPlaceHolder]="'例:'+CarModelForm.value.car_number1">
+                <nz-option *ngFor="let data of carNumList" [nzLabel]="data" [nzValue]="data"></nz-option>
+              </nz-select>
+            <!-- </nz-input-group> -->
+          </nz-form-control>
+          <nz-form-control nzErrorTip="Please input your number!" [nzSpan]="10">
+            <nz-input-group nzPrefixIcon="user">
+              <input formControlName="carNumber2"  nz-input placeholder="输入车牌号:12345" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary"><i nz-icon nzType="search"></i>搜索</button>
+          </nz-form-control>
+        </nz-form-item>
+        <button class="downButton" nz-button (click)="open('add', 0);" nzType="primary"><i nz-icon nzType="user-add" nzTheme="outline"></i>添加车辆</button>
+      </form>
+
+
+    <!-- 表格 start -->
+    <nz-table
+          [nzShowSizeChanger]="false"
+          [nzData]="listOfRandomUser"
+          [nzFrontPagination]="false"
+          [nzLoading]="loading"
+          [nzTotal]="total"
+          [nzPageSize]="pageSize"
+          (nzPageSizeChange)="nzPageSizeChange($event)"
+          [nzPageIndex]="pageIndex"
+          (nzPageIndexChange)="nzPageIndexChange($event)"
+          nzBordered="true"
+          nzOuterBordered="true"
+          nzSize="default"
+        >
+          <thead>
+            <tr>
+              <th nzAlign="center">ID</th>
+              <th nzAlign="center">姓名</th>
+              <th nzAlign="center">品牌</th>
+              <th nzAlign="center">车牌号</th>
+              <th nzAlign="center">保险到期时间</th>
+              <th nzAlign="center">添加时间</th>
+              <th nzAlign="center">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of listOfRandomUser" >
+              <td nzAlign="center">{{ data.id }}</td>
+              <td nzAlign="center">{{ data.name }}</td>
+              <td nzAlign="center">{{ data.brand }}</td>
+              <td nzAlign="center">{{ data.car_number1 }}{{ data.car_number2 }}</td>
+              <td nzAlign="center">{{ data.	insurance_expiration_time }}</td>
+              <td nzAlign="center">{{data.created}}</td>
+              <td nzAlign="center">
+                  <button class="mr5" nz-button nzType="primary" nzSize="small" (click)="open('edit', data.id)"><i nz-icon nzType="edit" nzTheme="outline"></i>编辑</button>
+                  <button nzDanger nz-popconfirm
+                  nzPopconfirmTitle="确定删除吗？"
+                  (nzOnConfirm)="deleteConfirm(data.id)"
+                  nzPopconfirmPlacement="topRight"
+                  nz-button nzType="primary" nzSize="small"><i nz-icon nzType="delete" nzTheme="outline"></i>删除</button>
+            </td>
+            </tr>
+          </tbody>
+    </nz-table>
+    <!-- 表格 end -->
+    
+        <!-- 添加/编辑用户 start -->
+        <nz-drawer
+            [nzBodyStyle]="{ overflow: 'auto' }"
+            [nzMaskClosable]="false"
+            [nzWidth]="360"
+            [nzVisible]="visible"
+            [nzTitle]="addEditCarTitle"
+            [nzFooter]="footerTpl"
+            (nzOnClose)="close()"
+        >
+            <form nz-form *nzDrawerContent [formGroup]="CarModelForm">
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>会员</nz-form-label>
+                    <nz-form-control>
+                        <nz-select nzShowSearch [(ngModel)]="CarModelForm.value.uid" formControlName="uid" >
+                            <nz-option *ngFor="let data of userList" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                </div>                
+            </div>
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                <nz-form-item>
+                      <nz-form-label>车牌</nz-form-label>
+                    <nz-form-control>
+                        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+                            <input type="text" nz-input formControlName="car_number2" />
+                          </nz-input-group>
+                          <ng-template #addOnBeforeTemplate>
+                            <nz-select style="width: 70px;" nzShowSearch [(ngModel)]="CarModelForm.value.car_number1" formControlName="car_number1" >
+                              <nz-option *ngFor="let data of carNumList" [nzLabel]="data" [nzValue]="data"></nz-option>
+                            </nz-select>
+                          </ng-template>
+                    </nz-form-control>
+                    
+                      
+
+                </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>汽车品牌</nz-form-label>
+                    <nz-form-control>
+                    <input nz-input formControlName="brand"  placeholder="例如:日产天籁"  />
+                    </nz-form-control>
+                </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>保险到期时间</nz-form-label>
+                    <nz-form-control>
+                        <nz-date-picker [nzFormat]="'yyyy/MM/dd'" class="width100" formControlName="insurance_expiration_time" [(ngModel)]="CarModelForm.value.insurance_expiration_time"></nz-date-picker>
+                    </nz-form-control>
+                </nz-form-item>
+                </div>
+            </div>
+            <div nz-row [nzGutter]="8">
+                <div nz-col nzSpan="24">
+                <nz-form-item>
+                    <nz-form-label>备注</nz-form-label>
+                    <nz-form-control>
+                    <textarea nz-input placeholder="please enter url description" formControlName="remark" [nzAutosize]="{ minRows: 4, maxRows: 4 }"></textarea>
+                    </nz-form-control>
+                </nz-form-item>
+                </div>
+            </div>
+            </form>
+    
+            <ng-template #footerTpl>
+            <div style="float: right">
+                <button nz-button style="margin-right: 8px;" (click)="close()">取消</button>
+                <button nz-button nzType="primary" (click)="carModelSubmit()" [disabled]="!CarModelForm.valid">提交</button>
+            </div>
+            </ng-template>
+        </nz-drawer>
+        <!-- 添加/编辑用户 start -->
+
+</nz-spin>
+
+
+
+

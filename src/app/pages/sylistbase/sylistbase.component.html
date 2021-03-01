@@ -1,0 +1,62 @@
+<nz-spin [nzSpinning]="isSpinning">
+
+    <form class="pb10" nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="submitSearchForm()">
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your username!">
+            <nz-input-group nzPrefixIcon="user">
+              <input formControlName="userName" nz-input placeholder="输入会员姓名" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary"><i nz-icon nzType="search"></i>搜索</button>
+          </nz-form-control>
+        </nz-form-item>        
+        <a class="downButton" (click)="export()" nz-button nzType="primary" [nzSize]="'default'"><i nz-icon nzType="download"></i>导出表格</a>
+      </form>
+
+<!-- 表格 start -->
+<nz-table
+[nzShowSizeChanger]="false"
+[nzData]="sylistbaseList"
+[nzFrontPagination]="false"
+[nzLoading]="loading"
+[nzTotal]="total"
+[nzPageSize]="pageSize"
+(nzPageSizeChange)="nzPageSizeChange($event)"
+[nzPageIndex]="pageIndex"
+(nzPageIndexChange)="nzPageIndexChange($event)"
+nzBordered="true"
+nzOuterBordered="true"
+nzSize="default"
+>
+<thead>
+  <tr>
+    <th nzAlign="center">id</th>
+    <th nzAlign="center">会员</th>
+    <th nzAlign="center">数量</th>
+    <th nzAlign="center">变动类型</th>
+    <th nzAlign="center">收银人</th>
+    <th nzAlign="center">收银类型</th>
+    <th nzAlign="center">备注</th>
+    <th nzAlign="center">操作时间</th>
+  </tr>
+</thead>
+<tbody>
+  <tr *ngFor="let data of sylistbaseList">
+    <td nzAlign="center">{{ data.id }}</td>
+    <td nzAlign="center">{{ data.name }}</td>
+    <td nzAlign="center">{{data.num}}</td>
+    <td nzAlign="center">{{data.typeName}}</td>
+    <td nzAlign="center">{{data.user_login}}</td>
+    <td nzAlign="center">{{data.cashierType}}</td>
+    <td nzAlign="center">{{data.remark}}</td>
+    <td nzAlign="center">{{data.created}}</td>
+  </tr>
+</tbody>
+</nz-table>
+<!-- 表格 end -->
+
+
+</nz-spin>
