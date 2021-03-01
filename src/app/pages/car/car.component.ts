@@ -215,6 +215,7 @@ console.log(this.userList);
             dataObj.resule
           );
           this.visible = false;
+          this.pageIndex = 1;
           this.loadDataFromServer({});
           // setTimeout('location.reload()',1000);
         }else{

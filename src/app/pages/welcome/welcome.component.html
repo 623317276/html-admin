@@ -6,13 +6,19 @@
             <nz-form-item>
               <nz-form-label>选择会员</nz-form-label>
               <nz-form-control>
-                <nz-select (ngModelChange)="userChange($event)" nzAllowClear nzShowSearch  formControlName="id" [nzPlaceHolder]="'选择会员'">
+                <nz-select (ngModelChange)="userChange($event)" nzShowSearch [ngModel]="UserModel.id"  formControlName="id" [nzPlaceHolder]="'选择会员'">
                     <nz-option *ngFor="let data of userList" [nzLabel]="data.name" [nzValue]="data.id"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
           </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+                <button nz-button nzType="default"  (click)="consumptionModal(UserModel.id,UserModel.name)">添加消费</button>
+            </nz-form-item>
+          </div>
         </div>
+        
         
       </form>
       <nz-divider nzType="horizontal"></nz-divider>
@@ -31,7 +37,16 @@
                     <nz-form-label>会员余额</nz-form-label>
                     <nz-form-control class="passenger-input">
                         <input class="width40"  [(ngModel)]="UserModel.balance" nz-input  disabled/>
-                        <button nz-button nzType="default" nzSize="small" (click)="rechargeModal(UserModel.id,UserModel.name)"><i nz-icon nzType="money-collect" nzTheme="outline"></i>充值</button>
+                        <button nz-button nzType="default" (click)="rechargeModal(UserModel.id,UserModel.name)"><i nz-icon nzType="money-collect" nzTheme="outline"></i>充值</button>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="8">
+                <nz-form-item>
+                    <nz-form-label>会员欠款</nz-form-label>
+                    <nz-form-control class="passenger-input">
+                        <input class="width40"  [(ngModel)]="UserModel.arrears" nz-input  disabled/>
+                        <button nz-button nzType="default" (click)="rechargeModal(UserModel.id,UserModel.name)"><i nz-icon nzType="money-collect" nzTheme="outline"></i>还款</button>
                     </nz-form-control>
                 </nz-form-item>
             </div>
@@ -103,7 +118,6 @@
       <button nz-button nzType="primary" (click)="showRechargeComfirmModal()" [nzLoading]="isConfirmLoading">提交</button>
     </div>
   </nz-modal>
-
 <!-- 充值确认 start -->
   <nz-modal
     [(nzVisible)]="rechargeComfirmIsVisible"
@@ -118,8 +132,85 @@
   </ng-container>
 </nz-modal>
 <!-- 充值确认 end -->
-
 <!-- 充值modal end -->
 
+<!-- 添加消费modal start -->
+<nz-modal nzWidth="880px" [(nzVisible)]="consumptionIsVisible" [nzTitle]="'添加消费'" (nzOnCancel)="consumptionHandleCancel()">
+    <div *nzModalContent>
+        <form nz-form [nzLayout]="'inline'" [formGroup]="ConsumptionModelForm">
+            <nz-descriptions class="width100" nzTitle="会员信息" nzBordered>
+                <nz-descriptions-item nzTitle="会员姓名">{{UserModel.name}}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="会员余额">{{UserModel.balance}}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="会员欠款">{{UserModel.arrears}}</nz-descriptions-item>      
+                <nz-descriptions-item nzTitle="商品列表" [nzSpan]="3">
+                    <nz-transfer
+                        [nzDataSource]="GoodsModel"
+                        nzShowSearch
+                        [nzOperations]="['to right', 'to left']"
+                        [nzListStyle]="{ 'width.px': 250, 'height.px': 300 }"
+                        [nzRender]="render"
+                        [nzFooter]="footer"
+                        (nzSelectChange)="select($event)"
+                        (nzChange)="change($event)"
+                        >
+                        <ng-template #render let-item> {{ item.title }}-{{ item.price }} </ng-template>
+                        <ng-template #footer let-direction>
+                            <button nz-button (click)="reload(direction)" [nzSize]="'small'" style="float: right; margin: 5px;">
+                            重置商品数据
+                            </button>
+                        </ng-template>
+                    </nz-transfer>
+                    <div nz-col nzSpan="24" class="pt20" nzOffset="16">
+                        <nz-form-item style="margin-top:10px;">
+                            <nz-form-label [nzSpan]="12">总消费</nz-form-label>
+                            <nz-form-control [nzSpan]="12">
+                            <input nz-input formControlName="num">
+                            </nz-form-control>
+                        </nz-form-item >
+                    </div>
+                </nz-descriptions-item> 
+                
+                <nz-descriptions-item nzTitle="收银类型" [nzSpan]="3">
+                    <nz-form-control>
+                        <nz-radio-group formControlName="cashierType" [(ngModel)]="ConsumptionModelForm.value.cashierType">
+                            <label nz-radio nzValue="1">微信</label>
+                            <label nz-radio nzValue="2">支付宝</label>
+                            <label nz-radio nzValue="3">现金</label>
+                            <label nz-radio nzValue="4">欠款</label>
+                            <label nz-radio nzValue="5">卡内余额</label>
+                        </nz-radio-group>
+                    </nz-form-control>
+                </nz-descriptions-item>
 
+                <nz-descriptions-item nzTitle="备注" >
+                    <nz-form-control>
+                        <textarea nz-input placeholder="please enter url description" formControlName="remark" [nzAutosize]="{ minRows: 4, maxRows: 4 }"></textarea>
+                    </nz-form-control>
+                </nz-descriptions-item>
+
+              </nz-descriptions>
+
+          </form>
+    </div>
+    <div *nzModalFooter>
+      <button nz-button nzType="default" (click)="consumptionHandleCancel()">取消</button>      
+      <button nz-button nzType="primary" (click)="showConsumptionComfirmModal()" [nzLoading]="isConsumptionConfirmLoading">提交</button>
+    </div>
+  </nz-modal>
+<!-- 添加消费确认 start -->
+  <nz-modal
+    [(nzVisible)]="consumptionComfirmIsVisible"
+    nzTitle="付款"
+    nzOkText="确认"
+    nzCancelText="取消"
+    (nzOnOk)="submitConsumptionForm()"
+    (nzOnCancel)="showConsumptionComfirmHandleCancel()"
+>
+<ng-container *nzModalContent>
+    <p style="text-align: center;">总共消费 {{ConsumptionModelForm.value.num}}</p>
+  </ng-container>
+</nz-modal>
+<!-- 添加消费确认 end -->
+
+<!-- 添加消费modal end -->
     </nz-spin>

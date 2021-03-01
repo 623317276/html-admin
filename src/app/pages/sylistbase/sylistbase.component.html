@@ -35,10 +35,10 @@ nzSize="default"
   <tr>
     <th nzAlign="center">id</th>
     <th nzAlign="center">会员</th>
-    <th nzAlign="center">数量</th>
     <th nzAlign="center">变动类型</th>
-    <th nzAlign="center">收银人</th>
+    <th nzAlign="center">数量</th>
     <th nzAlign="center">收银类型</th>
+    <th nzAlign="center">收银人</th>
     <th nzAlign="center">备注</th>
     <th nzAlign="center">操作时间</th>
   </tr>
@@ -47,10 +47,10 @@ nzSize="default"
   <tr *ngFor="let data of sylistbaseList">
     <td nzAlign="center">{{ data.id }}</td>
     <td nzAlign="center">{{ data.name }}</td>
-    <td nzAlign="center">{{data.num}}</td>
     <td nzAlign="center">{{data.typeName}}</td>
-    <td nzAlign="center">{{data.user_login}}</td>
+    <td nzAlign="center">{{data.num}}</td>
     <td nzAlign="center">{{data.cashierType}}</td>
+    <td nzAlign="center">{{data.user_nickname}}</td>
     <td nzAlign="center">{{data.remark}}</td>
     <td nzAlign="center">{{data.created}}</td>
   </tr>
