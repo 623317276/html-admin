@@ -46,7 +46,7 @@
                     <nz-form-label>会员欠款</nz-form-label>
                     <nz-form-control class="passenger-input">
                         <input class="width40"  [(ngModel)]="UserModel.arrears" nz-input  disabled/>
-                        <button nz-button nzType="default" (click)="rechargeModal(UserModel.id,UserModel.name)"><i nz-icon nzType="money-collect" nzTheme="outline"></i>还款</button>
+                        <button nz-button nzType="default" (click)="repaymentModal(UserModel.id,UserModel.name)"><i nz-icon nzType="money-collect" nzTheme="outline"></i>还款</button>
                     </nz-form-control>
                 </nz-form-item>
             </div>
@@ -85,7 +85,7 @@
                         <nz-form-label>收银人员</nz-form-label>
                         <nz-form-control>
                             <nz-radio-group formControlName="cashier" [(ngModel)]="RechargeModelForm.value.cashier" *ngFor="let data of AdminUserList">
-                                <label nz-radio [nzValue]="data.id">{{data.user_login}}</label>
+                                <label nz-radio [nzValue]="data.id">{{data.user_nickname}}</label>
                               </nz-radio-group>
                         </nz-form-control>
                     </nz-form-item>
@@ -133,6 +133,73 @@
 </nz-modal>
 <!-- 充值确认 end -->
 <!-- 充值modal end -->
+
+  
+<!-- 还款modal start -->
+<nz-modal [(nzVisible)]="repaymentIsVisible" [nzTitle]="'用户还款：'+repaymentUser.userName" (nzOnCancel)="repaymentHandleCancel()">
+  <div *nzModalContent>
+      <form nz-form [nzLayout]="'inline'" [formGroup]="RepaymentModelForm">
+              <div nz-col nzSpan="24">
+                  <nz-form-item>
+                      <nz-form-label>还款数量</nz-form-label>
+                      <nz-form-control>
+                      <nz-input-number formControlName="num" [(ngModel)]="UserModel.arrears" [nzMin]="0" [nzMax]="999999" [nzStep]="0.01" placeholder="输入充值数量"></nz-input-number>
+                      </nz-form-control>
+                  </nz-form-item>
+              </div>
+              <div nz-col nzSpan="24" class="pt20">
+                  <nz-form-item>
+                      <nz-form-label>收银人员</nz-form-label>
+                      <nz-form-control>
+                          <nz-radio-group formControlName="cashier" [(ngModel)]="RepaymentModelForm.value.cashier" *ngFor="let data of AdminUserList">
+                              <label nz-radio [nzValue]="data.id">{{data.user_nickname}}</label>
+                            </nz-radio-group>
+                      </nz-form-control>
+                  </nz-form-item>
+              </div>
+              <div nz-col nzSpan="24" class="pt20">
+                  <nz-form-item>
+                      <nz-form-label>收银类型</nz-form-label>
+                      <nz-form-control>
+                          <nz-radio-group formControlName="cashierType" [(ngModel)]="RepaymentModelForm.value.cashierType">
+                            <label nz-radio nzValue="1">微信</label>
+                            <label nz-radio nzValue="2">支付宝</label>
+                            <label nz-radio nzValue="3">现金</label>
+                          </nz-radio-group>
+                      </nz-form-control>
+                  </nz-form-item>
+              </div>
+              <div nz-col nzSpan="24" class="pt20">
+                  <nz-form-item>
+                      <nz-form-label>备注</nz-form-label>
+                      <nz-form-control>
+                      <textarea nz-input placeholder="please enter url description" formControlName="remark" [nzAutosize]="{ minRows: 4, maxRows: 4 }"></textarea>
+                      </nz-form-control>
+                  </nz-form-item>
+              </div>
+        </form>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="repaymentHandleCancel()">取消</button>         
+    <button nz-button nzType="primary" (click)="showRepaymentComfirmModal()" [nzLoading]="repaymentIsConfirmLoading">提交</button>
+  </div>
+</nz-modal>
+<!-- 还款确认 start -->
+<nz-modal
+  [(nzVisible)]="repaymentComfirmIsVisible"
+  nzTitle="还款确认"
+  nzOkText="确认"
+  nzCancelText="取消"
+  (nzOnOk)="submitRepaymentForm()"
+  (nzOnCancel)="showRepaymentComfirmHandleCancel()"
+>
+<ng-container *nzModalContent>
+  <p style="text-align: center;">确认给 {{repaymentUser.userName}} 还款 {{RepaymentModelForm.value.num}}元吗？</p>
+</ng-container>
+</nz-modal>
+<!-- 还款确认 end -->
+<!-- 还款modal end -->
+
 
 <!-- 添加消费modal start -->
 <nz-modal nzWidth="880px" [(nzVisible)]="consumptionIsVisible" [nzTitle]="'添加消费'" (nzOnCancel)="consumptionHandleCancel()">

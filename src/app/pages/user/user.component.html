@@ -129,7 +129,7 @@
                                 <nz-form-label>收银人员</nz-form-label>
                                 <nz-form-control>
                                     <nz-radio-group formControlName="cashier" [(ngModel)]="RechargeModelForm.value.cashier" *ngFor="let data of AdminUserList">
-                                        <label nz-radio [nzValue]="data.id">{{data.user_login}}</label>
+                                        <label nz-radio [nzValue]="data.id">{{data.user_nickname}}</label>
                                       </nz-radio-group>
                                 </nz-form-control>
                             </nz-form-item>

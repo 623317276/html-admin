@@ -17,6 +17,7 @@ export class WelcomeComponent implements OnInit {
   isSpinning = false; // 全局loading开关
   validateForm!: FormGroup;
   RechargeModelForm!: FormGroup; // 用户充值FormGroup
+  RepaymentModelForm!: FormGroup; // 用户还款FormGroup
   ConsumptionModelForm!: FormGroup; // 用户消费FormGroup  
   UserModel = {id:1,name:'非会员',balance:0,arrears:0}
   GoodsModel:TransferItem[] = [] // 商品列表
@@ -28,6 +29,8 @@ export class WelcomeComponent implements OnInit {
   consumptionComfirmIsVisible = false; // 消费确认弹出框显示变量
   isConfirmLoading = false;
   isConsumptionConfirmLoading = false;
+  repaymentComfirmIsVisible = false; // 还款确认弹出框显示变量
+  repaymentIsConfirmLoading = false;
 
   isCollapse = true;
 
@@ -45,6 +48,7 @@ export class WelcomeComponent implements OnInit {
     this.resetValidateForm();
     this.resetRechargeModelForm();
     this.resetConsumptionModelForm();
+    this.resetRepaymentModelForm();
     this.loadDataFromServer({pageIndex:1,pageSize:9999});
   }
 
@@ -125,6 +129,100 @@ export class WelcomeComponent implements OnInit {
     },err => {
       console.log(err)
       this.isSpinning = false; 
+    });
+  }
+
+  // 打开还款modal
+  repaymentUser = {userId:0,userName:''}; //还款用户的信息
+  repaymentIsVisible = false; 
+  repaymentModal(userId:number,userName:string): void {
+    this.repaymentUser.userId = userId;
+    this.repaymentUser.userName = userName;
+    this.repaymentIsVisible = true;    
+    this.isSpinning = true;
+    this.http.post('http://th.whatphp.com/install/user/getAdminUser', {token:this.token}).subscribe(data => {
+      const dataObj = (data as any)
+      this.AdminUserList = dataObj.data;
+      this.isSpinning = false; 
+    },err => {
+      console.log(err)
+      this.isSpinning = false; 
+    });
+  }
+
+  // 关闭还款modal
+  repaymentHandleCancel(): void {
+    this.repaymentUser = {userId:0,userName:''};
+    this.repaymentIsVisible = false;
+  }
+
+  // 重置用户还款变量
+  resetRepaymentModelForm(){
+    this.RepaymentModelForm = this.fb.group({
+      num: [0, [Validators.required]],
+      cashier: ['', [Validators.required]],
+      cashierType: ['1', [Validators.required]],
+      remark: ['', []],
+    });
+  }
+
+  // 显示还款确认框
+  showRepaymentComfirmModal(): void {
+    if(!this.RepaymentModelForm.valid){
+      this.notification.create(
+        'warning',
+        '警告',
+        '请填写完整数据'
+      );
+      return;
+    }
+    this.repaymentComfirmIsVisible = true;
+  }
+
+  // 还款取消框确认方法
+  showRepaymentComfirmHandleCancel(): void {
+    this.repaymentComfirmIsVisible = false;
+  }
+
+  // 还款提交
+  submitRepaymentForm(){
+    this.isSpinning = true;
+    this.repaymentIsConfirmLoading = true;
+    const repaymentParam = {
+      token: this.token,
+      ...this.repaymentUser,
+      ...this.RepaymentModelForm.value
+    };
+    // console.log(repaymentParam);return;
+    this.http.post('http://th.whatphp.com/install/user/repayment', repaymentParam).subscribe(data => {
+      const dataObj = (data as any)
+      if(dataObj.code == 0){
+        this.notification.error(
+          'error',
+          dataObj.resule
+        );
+        this.isSpinning = false;
+        this.repaymentIsConfirmLoading = false;
+        return;
+      }else{
+        this.notification.success(
+          'success',
+          dataObj.resule          
+        );
+      }
+      this.isSpinning = false; 
+      this.repaymentIsConfirmLoading = false;
+      this.userChange(this.repaymentUser.userId);
+      this.showRepaymentComfirmHandleCancel();
+      this.repaymentHandleCancel();
+      this.resetRepaymentModelForm();
+    },err => {
+      this.notification.error(
+        'error',
+        err
+      );
+      this.isSpinning = false; 
+      this.repaymentIsConfirmLoading = false;
     });
   }
 
