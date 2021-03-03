@@ -231,7 +231,8 @@
                         <nz-form-item style="margin-top:10px;">
                             <nz-form-label [nzSpan]="12">总消费</nz-form-label>
                             <nz-form-control [nzSpan]="12">
-                            <input nz-input formControlName="num">
+                            <!-- <input nz-input formControlName="num"> -->
+                            <span>{{ConsumptionModelForm.value.receivable}}</span>
                             </nz-form-control>
                         </nz-form-item >
                     </div>
@@ -274,7 +275,26 @@
     (nzOnCancel)="showConsumptionComfirmHandleCancel()"
 >
 <ng-container *nzModalContent>
-    <p style="text-align: center;">总共消费 {{ConsumptionModelForm.value.num}}</p>
+  <form nz-form [formGroup]="ConsumptionModelForm">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">应收</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzDisableAutoTips]="true">
+        <span>{{ConsumptionModelForm.value.receivable}}</span>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">实收</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-input-number formControlName="num" ></nz-input-number>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email">找零</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <span>{{(ConsumptionModelForm.value.receivable - ConsumptionModelForm.value.num).toFixed(2)}}</span>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
   </ng-container>
 </nz-modal>
 <!-- 添加消费确认 end -->

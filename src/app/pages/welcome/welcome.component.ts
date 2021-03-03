@@ -267,7 +267,7 @@ export class WelcomeComponent implements OnInit {
         this.consumptionGoodsList.push(iterator);
       }
     }
-    this.ConsumptionModelForm.patchValue({num:total});
+    this.ConsumptionModelForm.patchValue({num:total,receivable:total});
     console.log(this.consumptionGoodsList);
     console.log(this.ConsumptionModelForm.value);
     console.log('nzChange', ret);
@@ -376,7 +376,8 @@ export class WelcomeComponent implements OnInit {
   // 重置用户消费变量
   resetConsumptionModelForm(){
     this.ConsumptionModelForm = this.fb.group({
-      num: [0, [Validators.required]], // 消费总金额
+      num: [0, [Validators.required]], // 实收金额
+      receivable: [0, []], // 应收金额
       cashierType: ['1', [Validators.required]], // 付款方式
       remark: ['', []],
     });

@@ -1,0 +1,13 @@
+<nz-spin [nzSpinning]="isSpinning">
+    <div class="inner-content">
+        <nz-row [nzGutter]="16">
+            <nz-col [nzSpan]="12">
+              <nz-statistic [nzValue]="(pageModel.userNum | number)!" [nzTitle]="'总会员量'"></nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="12">
+              <nz-statistic [nzValue]="(pageModel.income | number: '1.0-2')!" [nzTitle]="'今日营业额'"></nz-statistic>
+            </nz-col>
+        </nz-row>        
+    </div>
+
+</nz-spin>

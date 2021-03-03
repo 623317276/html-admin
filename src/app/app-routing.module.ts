@@ -17,6 +17,8 @@ const routes: Routes = [
   { path: 'car', canActivate: [AuthGuard], loadChildren: () => import('./pages/car/car.module').then(m => m.CarModule) },
   { path: 'goods', canActivate: [AuthGuard], loadChildren: () => import('./pages/goods/goods.module').then(m => m.GoodsModule) },
   { path: 'package', canActivate: [AuthGuard], loadChildren: () => import('./pages/package/package.module').then(m => m.PackageModule) },
+  { path: 'consumption', canActivate: [AuthGuard], loadChildren: () => import('./pages/consumption/consumption.module').then(m => m.ConsumptionModule) },
+  { path: 'income', canActivate: [AuthGuard], loadChildren: () => import('./pages/income/income.module').then(m => m.IncomeModule) },
 ];
 
 @NgModule({

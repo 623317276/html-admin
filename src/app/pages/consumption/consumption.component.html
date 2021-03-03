@@ -35,10 +35,11 @@ nzSize="default"
   <tr>
     <th nzAlign="center">id</th>
     <th nzAlign="center">会员</th>
-    <th nzAlign="center">变动类型</th>
-    <th nzAlign="center">数量</th>
+    <th nzAlign="center">应收数量</th>
+    <th nzAlign="center">实收数量</th>
     <th nzAlign="center">收银类型</th>
     <th nzAlign="center">收银人</th>
+    <th nzAlign="center">消费商品信息</th>
     <th nzAlign="center">备注</th>
     <th nzAlign="center">操作时间</th>
   </tr>
@@ -47,12 +48,42 @@ nzSize="default"
   <tr *ngFor="let data of sylistbaseList">
     <td nzAlign="center">{{ data.id }}</td>
     <td nzAlign="center">{{ data.name }}</td>
-    <td nzAlign="center">{{data.typeName}}</td>
+    <td nzAlign="center">{{data.receivable}}</td>
     <td nzAlign="center">{{data.num}}</td>
-    <td nzAlign="center">{{data.cashierType}}</td>
+    <td nzAlign="center">{{data.cashierTypeName}}</td>
     <td nzAlign="center">{{data.user_nickname}}</td>
     <td nzAlign="center">
-      <a style="border: 0;" *ngIf="data.remark.length > 0" [nzTooltipTitle]="data.remark" nzTooltipPlacement="top" nz-button nz-tooltip>{{data.remark.substring(0,3)}}...</a>
+        <button nz-button nz-popover [nzPopoverContent]="contentTemplate">
+            <span *ngFor="let data2 of data.goodsInfo">
+                {{data2.name}}                
+            </span>
+        </button>
+        
+        <ng-template #contentTemplate>
+            <nz-table 
+            nzSize="small" 
+            [nzData]="data.goodsInfo" 
+            nzShowPagination="false" 
+            nzBordered="true"
+            #data.goodsInfo
+        >
+                <thead>
+                  <tr>
+                    <th>名称</th>
+                    <th>价格</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let data3 of data.goodsInfo">
+                    <td>{{ data3.name }}</td>
+                    <td>{{ data3.price }}</td>
+                  </tr>
+                </tbody>
+              </nz-table>
+        </ng-template>
+    </td>
+    <td nzAlign="center">
+        <a style="border: 0;" *ngIf="data.remark.length > 0" [nzTooltipTitle]="data.remark" nzTooltipPlacement="top" nz-button nz-tooltip>{{data.remark.substring(0,3)}}...</a>
     </td>
     <td nzAlign="center">{{data.created}}</td>
   </tr>
