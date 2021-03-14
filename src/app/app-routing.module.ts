@@ -19,6 +19,7 @@ const routes: Routes = [
   { path: 'package', canActivate: [AuthGuard], loadChildren: () => import('./pages/package/package.module').then(m => m.PackageModule) },
   { path: 'consumption', canActivate: [AuthGuard], loadChildren: () => import('./pages/consumption/consumption.module').then(m => m.ConsumptionModule) },
   { path: 'income', canActivate: [AuthGuard], loadChildren: () => import('./pages/income/income.module').then(m => m.IncomeModule) },
+  { path: 'reimbursement', canActivate: [AuthGuard], loadChildren: () => import('./pages/reimbursement/reimbursement.module').then(m => m.ReimbursementModule) },
 ];
 
 @NgModule({

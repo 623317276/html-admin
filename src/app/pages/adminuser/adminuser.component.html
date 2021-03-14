@@ -53,6 +53,7 @@
               <td nzAlign="center">{{data.created}}</td>
               <td nzAlign="center">
                   <button class="mr5" nz-button nzType="primary" nzSize="small" (click)="open('edit', data.id)"><i nz-icon nzType="edit" nzTheme="outline"></i>编辑</button>
+                  <button class="mr5" nz-button nzType="default" nzSize="small" (click)="reimModal(data.id, data.user_nickname)"><i nz-icon nzType="edit" nzTheme="outline"></i>报账</button>
             </td>
             </tr>
           </tbody>
@@ -130,6 +131,73 @@
             </ng-template>
         </nz-drawer>
         <!-- 添加/编辑用户 start -->
+
+
+        <!-- 报账modal start -->
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]="'用户报账：'+reimUser.userName" (nzOnCancel)="handleCancel()">
+  <div *nzModalContent>
+      <form nz-form [nzLayout]="'inline'" [formGroup]="ReimModelForm">
+              <div nz-col nzSpan="24">
+                  <nz-form-item>
+                      <nz-form-label>报账数量</nz-form-label>
+                      <nz-form-control>
+                      <nz-input-number formControlName="num" [nzMin]="0" [nzMax]="999999" [nzStep]="0.01" placeholder="输入报账数量"></nz-input-number>
+                      </nz-form-control>
+                  </nz-form-item>
+              </div>
+              <div nz-col nzSpan="24" class="pt20">
+                  <nz-form-item>
+                      <nz-form-label>报账人员</nz-form-label>
+                      <nz-form-control>
+                          <nz-radio-group formControlName="adminId" [(ngModel)]="ReimModelForm.value.adminId" *ngFor="let data of AdminUserList">
+                              <label nz-radio [nzValue]="data.id">{{data.user_nickname}}</label>
+                            </nz-radio-group>
+                      </nz-form-control>
+                  </nz-form-item>
+              </div>
+              <!-- <div nz-col nzSpan="24" class="pt20">
+                  <nz-form-item>
+                      <nz-form-label>收银类型</nz-form-label>
+                      <nz-form-control>
+                          <nz-radio-group formControlName="cashierType" [(ngModel)]="ReimModelForm.value.cashierType">
+                              <label nz-radio nzValue="现金">现金</label>
+                              <label nz-radio nzValue="微信">微信</label>
+                              <label nz-radio nzValue="支付宝">支付宝</label>
+                            </nz-radio-group>
+                      </nz-form-control>
+                  </nz-form-item>
+              </div> -->
+              <div nz-col nzSpan="24" class="pt20">
+                  <nz-form-item>
+                      <nz-form-label>备注</nz-form-label>
+                      <nz-form-control>
+                      <textarea nz-input placeholder="please enter url description" formControlName="remark" [nzAutosize]="{ minRows: 4, maxRows: 4 }"></textarea>
+                      </nz-form-control>
+                  </nz-form-item>
+              </div>
+        </form>
+  </div>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">取消</button>
+    <!-- <button nz-button nzType="primary" (click)="submitReimForm()" [nzLoading]="isConfirmLoading">提交</button> -->              
+    <button nz-button nzType="primary" (click)="showReimComfirmModal()" [nzLoading]="isConfirmLoading">提交</button>
+  </div>
+</nz-modal>
+<!-- 报账确认 start -->
+<nz-modal
+  [(nzVisible)]="reimComfirmIsVisible"
+  nzTitle="报账确认"
+  nzOkText="确认"
+  nzCancelText="取消"
+  (nzOnOk)="submitReimForm()"
+  (nzOnCancel)="showReimComfirmHandleCancel()"
+>
+<ng-container *nzModalContent>
+  <p style="text-align: center;">确认给 {{reimUser.userName}} 报账 {{ReimModelForm.value.num}}元吗？</p>
+</ng-container>
+</nz-modal>
+<!-- 报账确认 end -->
+<!-- 报账modal end -->
 
 </nz-spin>
 

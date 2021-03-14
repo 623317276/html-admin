@@ -23,6 +23,9 @@ export class AdminuserComponent implements OnInit {
   token = JSON.parse((this.loginfo as string)).token;
   listOfRandomUser:any = []
   passwordVisible = false; // 编辑/添加管理员，密码是否可见开关
+  ReimModelForm!: FormGroup; // 用户报账FormGroup
+  reimComfirmIsVisible = false; // 报账确认弹出框显示变量
+  isConfirmLoading = false;
 
   constructor(
     private notification: NzNotificationService,
@@ -36,6 +39,7 @@ export class AdminuserComponent implements OnInit {
     this.loadDataFromServer({});
     this.resetValidateForm();
     this.resetUserModelForm();
+    this.resetReimModelForm();
   }
 
   // 加载页面数据
@@ -187,5 +191,98 @@ export class AdminuserComponent implements OnInit {
 
   }
 
+  // 报账按钮
+  reimUser = {userId:0,userName:''}; //报账用户的信息
+  isVisible = false; 
+  AdminUserList:any = []; // 收银人员数据，后台可登录的用户
+  reimModal(userId:number,userName:string): void {
+    this.reimUser.userId = userId;
+    this.reimUser.userName = userName;
+    this.isVisible = true;
+    this.isSpinning = true;
+    this.http.post('http://th.whatphp.com/install/user/getAdminUser', {token:this.token}).subscribe(data => {
+      const dataObj = (data as any)
+      this.AdminUserList = dataObj.data;
+      this.isSpinning = false; 
+    },err => {
+      console.log(err)
+      this.isSpinning = false; 
+    });
+  }
+
+  // 重置用户报账变量
+  resetReimModelForm(){
+    this.ReimModelForm = this.fb.group({
+      num: [0, [Validators.required]], // 报账数量
+      adminId: ['', [Validators.required]], // 报账人id
+      remark: ['', []],
+    });
+  }
+
+  // 用户充值提交方法
+  submitReimForm(){    
+    this.isConfirmLoading = true;
+    const submitRechargeParam = {
+      token: this.token,
+      ...this.ReimModelForm.value,
+      ...this.reimUser
+    };
+    // console.log(submitRechargeParam);return;
+    this.http.post('http://th.whatphp.com/install/adminuser/reimbursement', submitRechargeParam).subscribe(data => {
+      const dataObj = (data as any)
+      if(dataObj.code == 0){
+        this.notification.error(
+          'error',
+          dataObj.resule
+        );
+        this.isSpinning = false;
+        this.isConfirmLoading = false;
+        return;
+      }else{
+        this.isSpinning = false;
+        this.notification.success(
+          'success',
+          dataObj.resule          
+        );
+      }
+      this.isConfirmLoading = false;
+      this.isVisible = false; 
+      this.reimComfirmIsVisible = false;
+      this.resetReimModelForm();
+    },err => {
+      console.log(err)
+      this.isSpinning = false; 
+      this.notification.error(
+        'error',
+        err.resule,
+        
+      );
+      return;
+    });
+  }
+
+  // 显示报账确认框
+  showReimComfirmModal(): void {
+    if(!this.ReimModelForm.valid){
+      this.notification.create(
+        'warning',
+        '警告',
+        '请填写完整数据'
+      );
+      return;
+    }
+    this.reimComfirmIsVisible = true;
+  }
+
+  // 报账取消框确认方法
+  showReimComfirmHandleCancel(): void {
+    this.reimComfirmIsVisible = false;
+  }
+
+  // 关闭充值modal
+  handleCancel(): void {
+    this.isVisible = false;
+    this.resetReimModelForm();
+  }
 
 }
