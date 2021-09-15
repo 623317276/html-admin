@@ -7,6 +7,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TransferItem } from 'ng-zorro-antd/transfer';
+import { CommonServiceModule } from 'src/app/common-service/common-service.module';
 
 @Component({
   selector: 'app-welcome',
@@ -40,8 +41,10 @@ export class WelcomeComponent implements OnInit {
     private http: HttpClient,
     private message: NzMessageService,
     private fb: FormBuilder,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private commonService: CommonServiceModule,
     ) {    
+      
   }
 
   ngOnInit() {
@@ -72,7 +75,8 @@ export class WelcomeComponent implements OnInit {
       ...this.validateForm.value,
       ...query
     };
-    this.http.post('http://th.whatphp.com/install/user/getList', searchParam).subscribe(data => {
+    this.isSpinning = true;
+    this.http.post(this.commonService.domain+'install/user/getList', searchParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
       if(dataObj.code == 1){
@@ -92,7 +96,7 @@ export class WelcomeComponent implements OnInit {
   userChange(id:number){
     console.log(id);
     this.isSpinning = true; 
-    this.http.post('http://th.whatphp.com/install/user/getUser', {token:this.token, id:id}).subscribe(data => {
+    this.http.post(this.commonService.domain+'install/user/getUser', {token:this.token, id:id}).subscribe(data => {
         this.isSpinning = false; 
         const dataObj = (data as any)
         this.UserModel = dataObj.data;
@@ -102,7 +106,7 @@ export class WelcomeComponent implements OnInit {
         this.isSpinning = false; 
       });
 
-      this.http.post('http://th.whatphp.com/install/car/getUserCar', {token:this.token, id:id}).subscribe(data => {
+      this.http.post(this.commonService.domain+'install/car/getUserCar', {token:this.token, id:id}).subscribe(data => {
         this.isSpinning = false; 
         const dataObj = (data as any)
         this.UserCarModel = dataObj.data;
@@ -122,7 +126,7 @@ export class WelcomeComponent implements OnInit {
     this.rechargeUser.userName = userName;
     this.isVisible = true;
     this.isSpinning = true;
-    this.http.post('http://th.whatphp.com/install/user/getAdminUser', {token:this.token}).subscribe(data => {
+    this.http.post(this.commonService.domain+'install/user/getAdminUser', {token:this.token}).subscribe(data => {
       const dataObj = (data as any)
       this.AdminUserList = dataObj.data;
       this.isSpinning = false; 
@@ -140,7 +144,7 @@ export class WelcomeComponent implements OnInit {
     this.repaymentUser.userName = userName;
     this.repaymentIsVisible = true;    
     this.isSpinning = true;
-    this.http.post('http://th.whatphp.com/install/user/getAdminUser', {token:this.token}).subscribe(data => {
+    this.http.post(this.commonService.domain+'install/user/getAdminUser', {token:this.token}).subscribe(data => {
       const dataObj = (data as any)
       this.AdminUserList = dataObj.data;
       this.isSpinning = false; 
@@ -194,7 +198,7 @@ export class WelcomeComponent implements OnInit {
       ...this.RepaymentModelForm.value
     };
     // console.log(repaymentParam);return;
-    this.http.post('http://th.whatphp.com/install/user/repayment', repaymentParam).subscribe(data => {
+    this.http.post(this.commonService.domain+'install/user/repayment', repaymentParam).subscribe(data => {
       const dataObj = (data as any)
       if(dataObj.code == 0){
         this.notification.error(
@@ -237,7 +241,7 @@ export class WelcomeComponent implements OnInit {
     }else{
       // 会员进入
       this.isSpinning = true;
-      this.http.post('http://th.whatphp.com/install/user/getUser', {id:userId,token:this.token}).subscribe(data => {
+      this.http.post(this.commonService.domain+'install/user/getUser', {id:userId,token:this.token}).subscribe(data => {
         const dataObj = (data as any)
         this.UserModel = dataObj.data;
         this.isSpinning = false; 
@@ -287,7 +291,7 @@ export class WelcomeComponent implements OnInit {
       token: this.token,
     };
     // 获取所有商品数据
-    this.http.post('http://th.whatphp.com/install/goods/getList', searchParam).subscribe(data => {
+    this.http.post(this.commonService.domain+'install/goods/getList', searchParam).subscribe(data => {
         const dataObj = (data as any)
         this.GoodsModel = dataObj.data.list;
         this.isSpinning = false; 
@@ -326,7 +330,7 @@ export class WelcomeComponent implements OnInit {
       goodsList:this.consumptionGoodsList
     };
     // console.log(submitConsumptionParam);return;
-    this.http.post('http://th.whatphp.com/install/user/consumption', submitConsumptionParam).subscribe(data => {
+    this.http.post(this.commonService.domain+'install/user/consumption', submitConsumptionParam).subscribe(data => {
       const dataObj = (data as any)
       if(dataObj.code == 0){
         this.notification.error(
@@ -416,7 +420,7 @@ export class WelcomeComponent implements OnInit {
       ...this.rechargeUser
     };
     // console.log(submitRechargeParam);return;
-    this.http.post('http://th.whatphp.com/install/user/recharge', submitRechargeParam).subscribe(data => {
+    this.http.post(this.commonService.domain+'install/user/recharge', submitRechargeParam).subscribe(data => {
       const dataObj = (data as any)
       if(dataObj.code == 0){
         this.notification.error(

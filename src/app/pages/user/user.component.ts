@@ -5,6 +5,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { CommonServiceModule } from 'src/app/common-service/common-service.module';
 
 @Component({
   selector: 'app-user',
@@ -21,8 +22,19 @@ export class UserComponent implements OnInit {
   pageSize = 10;
   loading = true; // 表格的loading
   pageIndex = 1;
-  loginfo = window.localStorage.getItem('loginfo');
-  token = JSON.parse((this.loginfo as string)).token;
+  loginfo = this.commonService.loginfo; // 調用commonService里的变量
+  token = this.commonService.token; // 調用commonService里的变量
+  // loginfo = window.localStorage.getItem('loginfo');
+  // token = JSON.parse((this.loginfo as string)).token;
+  
+  constructor(
+    private notification: NzNotificationService,
+    private http: HttpClient,
+    private message: NzMessageService,
+    private fb: FormBuilder,
+    private modal: NzModalService,
+    private commonService: CommonServiceModule,
+    ) {}
 
   // 加载页面数据
   loadDataFromServer(query:object){
@@ -241,13 +253,7 @@ export class UserComponent implements OnInit {
     });
   }
 
-  constructor(
-    private notification: NzNotificationService,
-    private http: HttpClient,
-    private message: NzMessageService,
-    private fb: FormBuilder,
-    private modal: NzModalService
-    ) {}
+  
   
   // 重置添加/编辑用户变量
   resetUserModelForm(){

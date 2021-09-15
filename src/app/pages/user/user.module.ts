@@ -6,12 +6,14 @@ import { UserComponent } from './user.component';
 import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
+import { CommonServiceModule } from '../../common-service/common-service.module';
 @NgModule({
   declarations: [UserComponent],
   imports: [
     CommonModule,
     UserRoutingModule,
-    NgZorroAntdModule,ReactiveFormsModule,FormsModule
+    NgZorroAntdModule,ReactiveFormsModule,FormsModule,
+    CommonServiceModule
   ]
 })
 export class UserModule { }
