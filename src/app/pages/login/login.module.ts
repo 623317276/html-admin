@@ -7,12 +7,14 @@ import { LoginFormComponent } from './login-form/login-form.component';
 import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { CommonServiceModule } from '../../common-service/common-service.module';
 
 @NgModule({
   declarations: [LoginComponent,LoginFormComponent],
   imports: [
     CommonModule,
-    LoginRoutingModule,NgZorroAntdModule,ReactiveFormsModule
+    LoginRoutingModule,NgZorroAntdModule,ReactiveFormsModule,
+		CommonServiceModule
   ]
 })
 export class LoginModule { }

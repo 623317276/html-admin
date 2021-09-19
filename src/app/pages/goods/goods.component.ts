@@ -4,6 +4,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { CommonServiceModule } from 'src/app/common-service/common-service.module';
 
 @Component({
   selector: 'app-goods',
@@ -29,7 +30,8 @@ export class GoodsComponent implements OnInit {
     private http: HttpClient,
     private message: NzMessageService,
     private fb: FormBuilder,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private commonService: CommonServiceModule,
     ) { }
 
   ngOnInit(): void {
@@ -47,7 +49,7 @@ export class GoodsComponent implements OnInit {
       token: this.token,
       ...query
     };
-    this.http.post('http://th.whatphp.com/install/goods/getList', searchParam).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/goods/getList', searchParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
       if(dataObj.code == 1){
@@ -77,7 +79,7 @@ export class GoodsComponent implements OnInit {
       this.addEditUserTitle = '编辑商品';
       this.addEditUserStatus = id;
       this.isSpinning = true;
-      this.http.post('http://th.whatphp.com/install/goods/getGoods', {token:this.token, id:id}).subscribe(data => {
+      this.http.post(this.commonService.domain + 'install/goods/getGoods', {token:this.token, id:id}).subscribe(data => {
         this.isSpinning = false; 
         const dataObj = (data as any)
         this.GoodsModelForm.patchValue(dataObj.data); // 要用patchValue赋值才行
@@ -135,7 +137,7 @@ export class GoodsComponent implements OnInit {
       id:this.addEditUserStatus,
       ...this.GoodsModelForm.value
     };
-    let uri = 'http://th.whatphp.com/install/goods/addGoods'; 
+    let uri = this.commonService.domain + 'install/goods/addGoods'; 
     this.http.post(uri, userModelParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);

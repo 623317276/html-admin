@@ -5,6 +5,7 @@ import { ConsumptionRoutingModule } from './consumption-routing.module';
 import { ConsumptionComponent } from './consumption.component';
 import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { ReactiveFormsModule,FormsModule } from '@angular/forms';
+import { CommonServiceModule } from '../../common-service/common-service.module';
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import { ReactiveFormsModule,FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     ConsumptionRoutingModule,
-    FormsModule,NgZorroAntdModule,ReactiveFormsModule
+    FormsModule,NgZorroAntdModule,ReactiveFormsModule,
+    CommonServiceModule
   ]
 })
 export class ConsumptionModule { }

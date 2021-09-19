@@ -4,6 +4,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { CommonServiceModule } from 'src/app/common-service/common-service.module';
 
 @Component({
   selector: 'app-car',
@@ -30,7 +31,8 @@ export class CarComponent implements OnInit {
     private message: NzMessageService,
     private fb: FormBuilder,
     private modal: NzModalService,
-    private nzMessageService: NzMessageService
+    private nzMessageService: NzMessageService,
+    private commonService: CommonServiceModule,
   ) { }
 
   ngOnInit(): void {
@@ -70,7 +72,7 @@ export class CarComponent implements OnInit {
       ...this.validateForm.value,
       ...query
     };
-    this.http.post('http://th.whatphp.com/install/car/getList', searchParam).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/car/getList', searchParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
       if(dataObj.code == 1){
@@ -98,7 +100,7 @@ export class CarComponent implements OnInit {
   open(open:string, id:number): void {
     this.visible = true;
     // 获取all会员信息
-    this.http.post('http://th.whatphp.com/install/user/getAllUser', {token:this.token}).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/user/getAllUser', {token:this.token}).subscribe(data => {
         const dataObj = (data as any)
         // console.log(dataObj);return;
         this.userList = dataObj.data;
@@ -115,7 +117,7 @@ console.log(this.userList);
       this.addEditCarTitle = '编辑车辆';
       this.addEditUserStatus = id;
       this.isSpinning = true;
-      this.http.post('http://th.whatphp.com/install/car/getCar', {token:this.token, id:id}).subscribe(data => {
+      this.http.post(this.commonService.domain + 'install/car/getCar', {token:this.token, id:id}).subscribe(data => {
         this.isSpinning = false; 
         const dataObj = (data as any)
         this.CarModelForm.patchValue(dataObj.data); // 要用patchValue赋值才行
@@ -169,7 +171,7 @@ console.log(this.userList);
       id:this.addEditUserStatus,
       ...this.CarModelForm.value
     };
-    let uri = 'http://th.whatphp.com/install/car/addCar'; 
+    let uri = this.commonService.domain + 'install/car/addCar'; 
     this.http.post(uri, carModelParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
@@ -206,7 +208,7 @@ console.log(this.userList);
   // 删除车辆
   deleteConfirm(id:number): void {
     this.isSpinning = true;
-    this.http.post('http://th.whatphp.com/install/car/deleteCar', {token:this.token, id:id}).subscribe(data => {      
+    this.http.post(this.commonService.domain + 'install/car/deleteCar', {token:this.token, id:id}).subscribe(data => {      
         const dataObj = (data as any)
         if(dataObj.code == 1){
           this.notification.create(

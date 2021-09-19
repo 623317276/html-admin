@@ -4,6 +4,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { CommonServiceModule } from 'src/app/common-service/common-service.module';
 
 @Component({
   selector: 'app-adminuser',
@@ -32,7 +33,8 @@ export class AdminuserComponent implements OnInit {
     private http: HttpClient,
     private message: NzMessageService,
     private fb: FormBuilder,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private commonService: CommonServiceModule,
   ) { }
 
   ngOnInit(): void {
@@ -51,7 +53,7 @@ export class AdminuserComponent implements OnInit {
       token: this.token,
       ...query
     };
-    this.http.post('http://th.whatphp.com/install/adminuser/getList', searchParam).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/adminuser/getList', searchParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
       if(dataObj.code == 1){
@@ -113,7 +115,7 @@ export class AdminuserComponent implements OnInit {
       this.addEditUserTitle = '编辑管理员';
       this.addEditUserStatus = id;
       this.isSpinning = true;
-      this.http.post('http://th.whatphp.com/install/adminuser/getUser', {token:this.token, id:id}).subscribe(data => {
+      this.http.post(this.commonService.domain + 'install/adminuser/getUser', {token:this.token, id:id}).subscribe(data => {
         this.isSpinning = false; 
         const dataObj = (data as any)
         this.UserModelForm.patchValue(dataObj.data); // 要用patchValue赋值才行
@@ -157,7 +159,7 @@ export class AdminuserComponent implements OnInit {
       id:this.addEditUserStatus,
       ...this.UserModelForm.value
     };
-    let uri = 'http://th.whatphp.com/install/adminuser/addUser'; 
+    let uri = this.commonService.domain + 'install/adminuser/addUser'; 
     this.http.post(uri, userModelParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
@@ -200,7 +202,7 @@ export class AdminuserComponent implements OnInit {
     this.reimUser.userName = userName;
     this.isVisible = true;
     this.isSpinning = true;
-    this.http.post('http://th.whatphp.com/install/user/getAdminUser', {token:this.token}).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/user/getAdminUser', {token:this.token}).subscribe(data => {
       const dataObj = (data as any)
       this.AdminUserList = dataObj.data;
       this.isSpinning = false; 
@@ -228,7 +230,7 @@ export class AdminuserComponent implements OnInit {
       ...this.reimUser
     };
     // console.log(submitRechargeParam);return;
-    this.http.post('http://th.whatphp.com/install/adminuser/reimbursement', submitRechargeParam).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/adminuser/reimbursement', submitRechargeParam).subscribe(data => {
       const dataObj = (data as any)
       if(dataObj.code == 0){
         this.notification.error(

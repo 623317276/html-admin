@@ -5,6 +5,7 @@ import { GoodsRoutingModule } from './goods-routing.module';
 import { GoodsComponent } from './goods.component';
 import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CommonServiceModule } from '../../common-service/common-service.module';
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     GoodsRoutingModule,
-    NgZorroAntdModule,ReactiveFormsModule,FormsModule
+    NgZorroAntdModule,ReactiveFormsModule,FormsModule,
+    CommonServiceModule
   ]
 })
 export class GoodsModule { }

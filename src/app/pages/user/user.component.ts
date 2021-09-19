@@ -45,7 +45,7 @@ export class UserComponent implements OnInit {
       token: this.token,
       ...query
     };
-    this.http.post('http://th.whatphp.com/install/user/getList', searchParam).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/user/getList', searchParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
       if(dataObj.code == 1){
@@ -102,7 +102,7 @@ export class UserComponent implements OnInit {
       this.addEditUserTitle = '编辑会员';
       this.addEditUserStatus = id;
       this.isSpinning = true;
-      this.http.post('http://th.whatphp.com/install/user/getUser', {token:this.token, id:id}).subscribe(data => {
+      this.http.post(this.commonService.domain + 'install/user/getUser', {token:this.token, id:id}).subscribe(data => {
         this.isSpinning = false; 
         const dataObj = (data as any)
         this.UserModelForm.patchValue(dataObj.data); // 要用patchValue赋值才行
@@ -136,7 +136,7 @@ export class UserComponent implements OnInit {
       id:this.addEditUserStatus,
       ...this.UserModelForm.value
     };
-    let uri = 'http://th.whatphp.com/install/user/addUser'; 
+    let uri = this.commonService.domain + 'install/user/addUser'; 
     this.http.post(uri, userModelParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
@@ -179,7 +179,7 @@ export class UserComponent implements OnInit {
     this.rechargeUser.userName = userName;
     this.isVisible = true;
     this.isSpinning = true;
-    this.http.post('http://th.whatphp.com/install/user/getAdminUser', {token:this.token}).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/user/getAdminUser', {token:this.token}).subscribe(data => {
       this.isSpinning = false; 
       const dataObj = (data as any)
       this.AdminUserList = dataObj.data;
@@ -219,7 +219,7 @@ export class UserComponent implements OnInit {
       ...this.rechargeUser
     };
     // console.log(submitRechargeParam);return;
-    this.http.post('http://th.whatphp.com/install/user/recharge', submitRechargeParam).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/user/recharge', submitRechargeParam).subscribe(data => {
       const dataObj = (data as any)
       if(dataObj.code == 0){
         this.notification.error(

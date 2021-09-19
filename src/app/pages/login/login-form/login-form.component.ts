@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { concatMap } from 'rxjs/operators';
+import { CommonServiceModule } from 'src/app/common-service/common-service.module';
 
 @Component({
   selector: 'app-login-form',
@@ -20,7 +21,8 @@ export class LoginFormComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private notification: NzNotificationService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private commonService: CommonServiceModule,
     ) {
       this.checkLogin();
     }
@@ -33,7 +35,7 @@ export class LoginFormComponent implements OnInit {
     }    
 
     if (this.validateForm.valid) {
-      this.http.post('http://th.whatphp.com/install/Userapi/login', this.validateForm.value).subscribe(data => {
+      this.http.post(this.commonService.domain + 'install/Userapi/login', this.validateForm.value).subscribe(data => {
         const dataObj = (data as any)
         if(dataObj.code == 1){
           this.message.create('success', dataObj.resule);

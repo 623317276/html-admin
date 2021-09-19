@@ -10,9 +10,15 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class CommonServiceModule {
-  domain = "http://th.whatphp.com/";
+  domain = "http://127.0.0.1:8080/public/index.php/";
   loginfo = window.localStorage.getItem('loginfo');
-  token = JSON.parse((this.loginfo as string)).token;
+  token = ''; 
 
-
+	constructor() {
+		if(this.loginfo == ''){
+			return ;
+		}else{
+			this.token = JSON.parse((this.loginfo as string)).token;
+		}
+	}
 }

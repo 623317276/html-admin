@@ -5,6 +5,7 @@ import { CarRoutingModule } from './car-routing.module';
 import { CarComponent } from './car.component';
 import { NgZorroAntdModule } from '../../ng-zorro-antd.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CommonServiceModule } from '../../common-service/common-service.module';
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     CarRoutingModule,
-    NgZorroAntdModule,ReactiveFormsModule,FormsModule
+    NgZorroAntdModule,ReactiveFormsModule,FormsModule,
+    CommonServiceModule
   ]
 })
 export class CarModule { }

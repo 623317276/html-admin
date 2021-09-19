@@ -3,6 +3,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonServiceModule } from 'src/app/common-service/common-service.module';
 
 @Component({
   selector: 'app-consumption',
@@ -26,6 +27,7 @@ export class ConsumptionComponent implements OnInit {
     private http: HttpClient,
     private message: NzMessageService,
     private fb: FormBuilder,
+    private commonService: CommonServiceModule,
   ) { }
 
   // 搜索框方法
@@ -63,7 +65,7 @@ export class ConsumptionComponent implements OnInit {
       ...query,
       ...this.validateForm.value
     };
-    this.http.post('http://th.whatphp.com/install/consumption/getList', searchParam).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/consumption/getList', searchParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
       if(dataObj.code == 1){

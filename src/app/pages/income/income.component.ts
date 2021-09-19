@@ -3,6 +3,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonServiceModule } from 'src/app/common-service/common-service.module';
 
 @Component({
   selector: 'app-income',
@@ -19,6 +20,7 @@ export class IncomeComponent implements OnInit {
     private http: HttpClient,
     private message: NzMessageService,
     private fb: FormBuilder,
+    private commonService: CommonServiceModule,
   ) { }
 
   ngOnInit(): void {
@@ -33,7 +35,7 @@ export class IncomeComponent implements OnInit {
       token: this.token,
       ...query,
     };
-    this.http.post('http://th.whatphp.com/install/income/getIncome', searchParam).subscribe(data => {
+    this.http.post(this.commonService.domain + 'install/income/getIncome', searchParam).subscribe(data => {
       const dataObj = (data as any)
       console.log(dataObj);
       if(dataObj.code == 1){
